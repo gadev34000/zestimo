@@ -31,6 +31,10 @@ class Recipe
     #[ORM\Column(nullable: true)]
     private ?int $originalRecipeId = null;
 
+    #[ORM\ManyToOne(inversedBy: 'recipes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?RecipeCategory $recipeCategory = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -104,6 +108,18 @@ class Recipe
     public function setOriginalRecipeId(?int $originalRecipeId): static
     {
         $this->originalRecipeId = $originalRecipeId;
+
+        return $this;
+    }
+
+    public function getRecipeCategory(): ?RecipeCategory
+    {
+        return $this->recipeCategory;
+    }
+
+    public function setRecipeCategory(?RecipeCategory $recipeCategory): static
+    {
+        $this->recipeCategory = $recipeCategory;
 
         return $this;
     }
