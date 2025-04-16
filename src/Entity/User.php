@@ -42,9 +42,16 @@ class User
     #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'users')]
     private Collection $roles;
 
+    /**
+     * @var Collection<int, Validation>
+     */
+    #[ORM\OneToMany(targetEntity: Validation::class, mappedBy: 'user')]
+    private Collection $validations;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
+        $this->validations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -156,6 +163,36 @@ class User
     public function removeRole(Role $role): static
     {
         $this->roles->removeElement($role);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Validation>
+     */
+    public function getValidations(): Collection
+    {
+        return $this->validations;
+    }
+
+    public function addValidation(Validation $validation): static
+    {
+        if (!$this->validations->contains($validation)) {
+            $this->validations->add($validation);
+            $validation->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeValidation(Validation $validation): static
+    {
+        if ($this->validations->removeElement($validation)) {
+            // set the owning side to null (unless already changed)
+            if ($validation->getUser() === $this) {
+                $validation->setUser(null);
+            }
+        }
 
         return $this;
     }
